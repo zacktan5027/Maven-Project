@@ -26,6 +26,6 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Build and push
       run: |
-        docker build -t gagandeepthinknyx/intel-app:latest .
+        docker build -t gagandeepthinknyx/intel-app:v4 .
         docker images
         docker push gagandeepthinknyx/intel-app:v4
