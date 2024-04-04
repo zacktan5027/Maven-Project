@@ -1,0 +1,32 @@
+name: cicd
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone the repository
+        uses: actions/checkout@v4.1.2
+      - name: Setup Java 11
+        uses: actions/setup-java@v4.2.1
+        with: 
+          java-version: '11'
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Create package using maven
+        run: mvn package
+      - name: Setup Qemu
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: create docker image and container
+        run:
+          ls -l
+          docker build -t myapp:latest .
+          docker images
+          docker run -dt --name web1 myapp:latest
+          docker ps -a
+          
+        
+          
+        
+        
