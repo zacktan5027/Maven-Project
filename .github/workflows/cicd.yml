@@ -28,7 +28,13 @@ jobs:
           docker build -t gagandeepthinknyx/intelus:latest .
           docker push gagandeepthinknyx/intelus:latest
           
-        
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: deploy the kubernetes yaml
+        run: |
+          sudo kubectl create -f deployment.yml
+          sudo kubectl get pods
           
         
         
