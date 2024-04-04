@@ -30,7 +30,10 @@ jobs:
           
   deploy:
     runs-on: self-hosted
+    needs: build
     steps:
+      - name: clone the repository
+        uses: actions/checkout@v4.1.2
       - name: deploy the kubernetes yaml
         run: |
           sudo kubectl create -f deployment.yml
