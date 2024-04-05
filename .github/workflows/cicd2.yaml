@@ -38,10 +38,11 @@ jobs:
 
   deploy:
     runs-on: self-hosted
+    needs: build
     steps:
       - name: clone the repository
         uses: actions/checkout@v4.1.2
       - name: Deploy the k8s deployment
         run: |
-          kubectl apply -f deployment.yml
-          kubectl get pods
+          sudo kubectl apply -f deployment.yml
+          sudo kubectl get pods
