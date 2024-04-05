@@ -35,4 +35,13 @@ jobs:
         run: |
           docker tag myapp:latest gagandeepthinknyx/intel1:latest
           docker push gagandeepthinknyx/intel1:latest
-       
+
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: clone the repository
+        uses: actions/checkout@v4.1.2
+      - name: Deploy the k8s deployment
+        run: |
+          kubectl apply -f deployment.yml
+          kubectl get pods
