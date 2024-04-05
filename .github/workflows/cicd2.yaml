@@ -18,9 +18,21 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Docker image build and run
+      - name: Docker image build
         run: |
           docker build -t myapp:latest .
           docker images
+      - name: Test the image by creating the container
+        run: |
           docker run -dt --name web1 myapp:latest
+          docker ps -a
+      - name: Login to dockerhub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Push Image to dockerhub
+        run: |
+          docker tag myapp:latest gagandeepthinknyx/intel1:latest
+          docker push gagandeepthinknyx/intel1:latest
        
