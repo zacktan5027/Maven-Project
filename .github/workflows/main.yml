@@ -25,3 +25,44 @@ jobs:
         uses: docker/setup-qemu-action@v3  
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: docker image build
+        run: |
+          docker build -t myimage:${{ GITHUB.RUN_NUMBER }} .
+          docker images
+      - name: Docker container creation test
+        run: |
+          docker run -dt --name c1 myimage:${{ GITHUB.RUN_NUMBER }}
+          docker ps
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}  
+      - name: Docker push
+        run: |
+          docker tag myimage:${{ GITHUB.RUN_NUMBER }} gagandeepgawri/intel5:${{ GITHUB.RUN_NUMBER }}
+          docker tag myimage:${{ GITHUB.RUN_NUMBER }} gagandeepgawri/intel5:latest
+          docker push gagandeepgawri/intel5:latest
+          docker push gagandeepgawri/intel5:${{ GITHUB.RUN_NUMBER }}
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3  
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Docker container creation test
+        run: |
+          docker run -dt --name web1 gagandeepgawri/intel5:latest
+          docker ps   
+  deploy:
+    runs-on: self-hosted
+    needs: test
+    steps:
+      - name: clone the repository
+        uses: actions/checkout@v4.1.5
+      - name: Deploy the App in Kubernetes environment
+        run: |
+          kubectl apply -f deployment.yml
+          kubectl get pods
